@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * Created by Harsh Mahajan on 23/7/2017.
+ *
+ * Music Recycler Adapter to display list in Recycler View
  */
 
 public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdapter.MusicViewHolder> {
@@ -23,10 +25,6 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
     private Context mContext;
     private List<Music> mData = new ArrayList<>();
     private OnMusicItemClickListener mClickListener;
-
-    public interface OnMusicItemClickListener {
-        void onMusicClick(int listMusicPosition);
-    }
 
     public MusicRecyclerAdapter(Context context, List<Music> data, OnMusicItemClickListener listener) {
         mContext = context;
@@ -58,6 +56,10 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
     public int getItemCount() {
         if(mData == null) return 0;
         return mData.size();
+    }
+
+    public interface OnMusicItemClickListener {
+        void onMusicClick(int listMusicPosition);
     }
 
     class MusicViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

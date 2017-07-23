@@ -20,8 +20,20 @@
         </activity>
 
         <provider
-            android:authorities="com.hmproductions.myplayer"
             android:name=".data.MusicProvider"
+            android:authorities="com.hmproductions.myplayer"
+            android:exported="false" />
+
+        <service
+            android:name=".services.PlayMusicService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.PreviousMusicService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.NextMusicService"
             android:exported="false"/>
 
     </application>

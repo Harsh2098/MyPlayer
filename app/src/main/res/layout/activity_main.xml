@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/background_light"
+        android:background="@android:color/holo_orange_dark"
         android:elevation="16dp">
 
         <ImageView
@@ -24,7 +24,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:contentDescription="@string/notification_thumbnail"
-            android:src="@mipmap/notification_icon"
+            android:src="@mipmap/white_quaver"
             android:textSize="18sp" />
 
         <TextView
@@ -61,7 +61,7 @@
                 android:id="@+id/previous_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/background_light"
+                android:background="@drawable/round_button"
                 android:contentDescription="@string/previous_song"
                 android:foregroundGravity="center"
                 android:src="@mipmap/previous_icon" />
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
-                android:background="@android:color/background_light"
+                android:background="@drawable/round_button"
                 android:contentDescription="@string/play_song"
                 android:foregroundGravity="center"
                 android:src="@mipmap/play_icon" />
@@ -81,7 +81,7 @@
                 android:id="@+id/next_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/background_light"
+                android:background="@drawable/round_button"
                 android:contentDescription="@string/next_song"
                 android:foregroundGravity="center"
                 android:src="@mipmap/next_icon" />
@@ -98,14 +98,14 @@
 
     <TextView
         android:id="@+id/looking_textView"
-        android:text="@string/looking_for_music"
-        android:textStyle="bold|italic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@id/loadingMP3_progressBar"
         android:layout_centerHorizontal="true"
+        android:text="@string/looking_for_music"
         android:textColor="@android:color/background_dark"
-        android:visibility="invisible"
-        android:layout_above="@id/loadingMP3_progressBar"/>
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        android:visibility="invisible" />
 
 </RelativeLayout>

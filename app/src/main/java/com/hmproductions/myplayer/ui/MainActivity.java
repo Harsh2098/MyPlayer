@@ -1,7 +1,9 @@
 package com.hmproductions.myplayer.ui;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -26,14 +28,14 @@ import com.hmproductions.myplayer.R;
 import com.hmproductions.myplayer.data.Music;
 import com.hmproductions.myplayer.data.MusicContract;
 import com.hmproductions.myplayer.data.MusicContract.MusicEntry;
+import com.hmproductions.myplayer.services.NextMusicService;
+import com.hmproductions.myplayer.services.PlayMusicService;
+import com.hmproductions.myplayer.services.PreviousMusicService;
 import com.hmproductions.myplayer.utils.MusicLoader;
 import com.hmproductions.myplayer.utils.MusicRecyclerAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity
         extends AppCompatActivity
@@ -41,26 +43,24 @@ public class MainActivity
             MusicRecyclerAdapter.OnMusicItemClickListener,
             LoaderManager.LoaderCallbacks<List<Music>> {
 
+    public static final String ACTION_BUTTON_KEY = "action-button-key";
     private static final int MUSIC_PLAYER_NOTIFICATION_ID = 101;
     private static final int MUSIC_FILES_LOADER_ID = 1001;
     private static final int MUSIC_DATABASE_LOADER_ID = 1002;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-
+    private static final int RC_PLAY_MUSIC = 11;
+    public static RemoteViews mRemoteViews;
+    public static MediaPlayer mediaPlayer;
+    public static List<Music> mData = new ArrayList<>();
+    public static int currentPosition = 0;
     MusicRecyclerAdapter mAdapter;
     RecyclerView musicRecyclerView;
     ProgressBar loadingMP3_progressBar;
     SeekBar music_seekBar;
     TextView musicTitle_textView, lookingTextView;
-    RemoteViews mRemoteViews;
-    MediaPlayer mediaPlayer;
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
     LoaderManager.LoaderCallbacks<Cursor> mMusicDatabaseLoader;
-
     ImageButton playButton, previousButton, nextButton;
-
-    List<Music> mData = new ArrayList<>();
-    private int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public class MainActivity
 
         PlayButtonClickListener();
         NextButtonClickListener();
-        //PreviousButtonClickListener();
+        PreviousButtonClickListener();
 
         getSupportLoaderManager().initLoader(MUSIC_FILES_LOADER_ID, null, this);
         getSupportLoaderManager().initLoader(MUSIC_DATABASE_LOADER_ID, null, mMusicDatabaseLoader);
@@ -89,6 +89,27 @@ public class MainActivity
         {
             mRemoteViews = new RemoteViews(getPackageName(), R.layout.notification_player);
         }
+
+        PendingIntent playPendingIntent = PendingIntent.getService(
+                this,
+                RC_PLAY_MUSIC,
+                new Intent(this, PlayMusicService.class),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        mRemoteViews.setOnClickPendingIntent(R.id.play_button, playPendingIntent);
+
+        PendingIntent previousPendingIntent = PendingIntent.getService(
+                this,
+                RC_PLAY_MUSIC,
+                new Intent(this, PreviousMusicService.class),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        mRemoteViews.setOnClickPendingIntent(R.id.previous_button, previousPendingIntent);
+
+        PendingIntent nextPendingIntent = PendingIntent.getService(
+                this,
+                RC_PLAY_MUSIC,
+                new Intent(this, NextMusicService.class),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        mRemoteViews.setOnClickPendingIntent(R.id.next_button, nextPendingIntent);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder
@@ -142,9 +163,29 @@ public class MainActivity
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.pause();
                         playButton.setImageResource(R.mipmap.play_icon);
+                        mRemoteViews.setImageViewResource(R.id.play_button, R.mipmap.play_icon);
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this);
+                        builder
+                                .setContent(mRemoteViews)
+                                .setSmallIcon(R.mipmap.notification_icon)
+                                .setOngoing(true)
+                                .setWhen(System.currentTimeMillis());
+
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        notificationManager.notify(MUSIC_PLAYER_NOTIFICATION_ID, builder.build());
                     } else {
                         mediaPlayer.start();
                         playButton.setImageResource(R.mipmap.pause_icon);
+                        mRemoteViews.setImageViewResource(R.id.play_button, R.mipmap.pause_icon);
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this);
+                        builder
+                                .setContent(mRemoteViews)
+                                .setSmallIcon(R.mipmap.notification_icon)
+                                .setOngoing(true)
+                                .setWhen(System.currentTimeMillis());
+
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        notificationManager.notify(MUSIC_PLAYER_NOTIFICATION_ID, builder.build());
                     }
                 }
             }
@@ -160,6 +201,18 @@ public class MainActivity
                     onMusicClick(0);
                 else
                     onMusicClick(currentPosition + 1);
+            }
+        });
+    }
+
+    private void PreviousButtonClickListener() {
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPosition == 0)
+                    onMusicClick(mData.size() - 1);
+                else
+                    onMusicClick(currentPosition - 1);
             }
         });
     }
@@ -287,5 +340,19 @@ public class MainActivity
 
             }
         };
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mediaPlayer != null) {
+            musicTitle_textView.setText(mData.get(currentPosition).getTitle());
+
+            if (mediaPlayer.isPlaying())
+                playButton.setImageResource(R.mipmap.pause_icon);
+            else
+                playButton.setImageResource(R.mipmap.play_icon);
+        }
     }
 }
