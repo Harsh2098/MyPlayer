@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Player</string>
+    <string name="notification_thumbnail">Notification Thumbnail</string>
+    <string name="previous_song">previous_song</string>
+    <string name="play_song">play_song</string>
+    <string name="next_song">next_song</string>
+    <string name="looking_for_music">Looking for music ...</string>
+</resources>

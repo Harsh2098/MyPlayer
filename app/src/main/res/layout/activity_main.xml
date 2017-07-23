@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EEEEEE"
+    tools:context="com.hmproductions.myplayer.ui.MainActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/musicList_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/background_light"
+        android:elevation="16dp">
+
+        <ImageView
+            android:id="@+id/notification_thumbnail_imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/notification_thumbnail"
+            android:src="@mipmap/notification_icon"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/musicTitle_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_toEndOf="@id/notification_thumbnail_imageView"
+            android:textColor="@android:color/background_dark"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/music_seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/musicTitle_textView"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/notification_thumbnail_imageView"
+            android:backgroundTint="?colorAccent"
+            android:thumbTint="?android:colorPrimary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/music_seekBar"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/notification_thumbnail_imageView"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/background_light"
+                android:contentDescription="@string/previous_song"
+                android:foregroundGravity="center"
+                android:src="@mipmap/previous_icon" />
+
+            <ImageButton
+                android:id="@+id/play_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/background_light"
+                android:contentDescription="@string/play_song"
+                android:foregroundGravity="center"
+                android:src="@mipmap/play_icon" />
+
+            <ImageButton
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/background_light"
+                android:contentDescription="@string/next_song"
+                android:foregroundGravity="center"
+                android:src="@mipmap/next_icon" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/loadingMP3_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/looking_textView"
+        android:text="@string/looking_for_music"
+        android:textStyle="bold|italic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/background_dark"
+        android:visibility="invisible"
+        android:layout_above="@id/loadingMP3_progressBar"/>
+
+</RelativeLayout>
